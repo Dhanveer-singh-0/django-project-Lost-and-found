@@ -1,0 +1,12 @@
+{% extends "citizen_dashboard.html" %} 
+{% block title %}
+history
+{% endblock %} 
+{%block content %}
+<h1>
+  History Page
+  [ My Claims ] [ Resolved ]
+</h1>
+{% for item in items %}
+    <li>item.title  item.item_type</li>
+{% endblock %}

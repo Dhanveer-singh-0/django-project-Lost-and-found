@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <title>Login - Lost and Found</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/register.css">
+
+  <style>
+    body{
+      padding-top:20px;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white shadow-2xl rounded-2xl w-full max-w-xl p-10 border border-gray-200">
+
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-700 tracking-wide">
+      User Login
+    </h2>
+
+    <form method="POST" action="/account/login/">
+      {% csrf_token %}
+
+      <table class="w-full">
+
+        <tr class="border-b">
+          <th class="text-left py-4 text-gray-600 w-1/3 font-medium">
+            Email
+          </th>
+          <td class="py-4">
+            <input
+              type="email"
+              name="email"
+              required
+              class="w-full border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            >
+          </td>
+        </tr>
+
+        <tr class="border-b">
+          <th class="text-left py-4 text-gray-600 font-medium">
+            Password
+          </th>
+          <td class="py-4">
+            <input
+              type="password"
+              name="password"
+              required
+              class="w-full border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            >
+          </td>
+        </tr>
+
+        <tr class="border-b">
+          <th class="text-left py-4 text-gray-600 font-medium">
+            Role
+          </th>
+          <td class="py-4">
+            <select
+              name="role"
+              required
+              class="w-full border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            >
+              <option value="">Select Role</option>
+              <option value="citizen">Citizen</option>
+              <option value="area_officer">Area Officer</option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="pt-8 text-center">
+            <button
+              type="submit"
+              class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-lg shadow-lg transition duration-300 w-2/3"
+            >
+              Login
+            </button>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="pt-6 text-center text-gray-600">
+            Don't have an account?
+            <a href="/account/register/" class="text-indigo-600 font-semibold hover:underline">
+              Register
+            </a>
+          </td>
+        </tr>
+
+      </table>
+    </form>
+
+  </div>
+
+</body>
+</html>
