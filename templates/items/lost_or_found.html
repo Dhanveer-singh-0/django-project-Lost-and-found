@@ -1,6 +1,5 @@
 {% extends "citizen_dashboard.html" %} {% block title %} {{ item_type|title }}
-Items {% endblock %} {% block content %} 
-{% load static %}
+Items {% endblock %} {% block content %} {% load static %}
 <div class="max-w-7xl mx-auto mt-8">
   <!-- Page Header -->
   <div class="flex justify-between items-center mb-6">
@@ -25,11 +24,19 @@ Items {% endblock %} {% block content %}
           Report {{ item_type }} Item
         </h2>
 
-        <form method="POST" enctype="multipart/form-data" action="/items/upload_item/">
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          action="/items/upload_item/"
+        >
           {% csrf_token %}
 
           <!-- Category -->
-          <select name="category" class="w-full mb-3 p-2 border rounded" required>
+          <select
+            name="category"
+            class="w-full mb-3 p-2 border rounded"
+            required
+          >
             <option value="others">Select Category</option>
             <option value="electronics">Electronics</option>
             <option value="clothing">Clothing</option>
@@ -48,7 +55,7 @@ Items {% endblock %} {% block content %}
             class="w-full mb-3 p-2 border rounded"
             required
           />
- <input
+          <input
             type="text"
             name="description"
             placeholder="Write Something about item..."
@@ -69,19 +76,20 @@ Items {% endblock %} {% block content %}
             class="w-full mb-3 p-2 border rounded"
             required
           />
-           <input
+          <input
             type="text"
             name="state"
             placeholder="State"
             class="w-full mb-3 p-2 border rounded"
             required
           />
+          <input type="hidden" name="item_type" value="{{ item_type }}" />
           <input
-            type="hidden"
-            name="item_type"
-            value="{{ item_type }}"
+            type="file"
+            name="image"
+            class="w-full mb-3"
+            accept="image/*"
           />
-          <input type="file" name="image" class="w-full mb-3" accept="image/*" />
 
           <div class="flex justify-end space-x-3">
             <button
@@ -111,19 +119,10 @@ Items {% endblock %} {% block content %}
     {% for item in items %}
 
     <div class="bg-white rounded-xl shadow-md p-4">
-      {% if item.images.first %}
-      <!-- <img src="{{ item.images.first.image.url }}" -->
-
       <img
-        src="{{ item.images.first.image }}"
-        class="w-full h-40 object-cover rounded-lg"
+        src="{{ item.get_image }}"
+        class="w-full h-40 object-contain rounded-lg"
       />
-      {% else %}
-      <img
-        src="{% static 'images/broken-image.png' %}"
-        class="w-full h-40 object-cover rounded-lg"
-      />
-      {% endif %}
 
       <h3 class="text-lg font-semibold mt-3">{{ item.title }}</h3>
 

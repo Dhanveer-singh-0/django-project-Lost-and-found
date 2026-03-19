@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
-
+from cloudinary.models import CloudinaryField
+from django.templatetags.static import static
 
 class Item(models.Model):
 
@@ -52,6 +53,13 @@ class Item(models.Model):
     def __str__(self):
         return f"{self.title} ({self.item_type})"
     
+    def get_image(self):
+        img = self.images.first()  # since only 1 image expected
+
+        if img and img.image:
+            return img.image.url  # Cloudinary URL
+        return static("images/default_item.jpg")
+    
 
 class ItemImage(models.Model):
 
@@ -61,8 +69,8 @@ class ItemImage(models.Model):
         related_name="images"
     )
 
-    image = models.ImageField(
-        upload_to="items_images/"
+    image = CloudinaryField(
+        'item_image', blank=True, null=True
     )
 
     uploaded_at = models.DateTimeField(

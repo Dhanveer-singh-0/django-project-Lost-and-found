@@ -21,6 +21,18 @@
       function closeFormModal() {
         document.getElementById("itemModal").classList.add("hidden");
       }
+
+      function openProfileModal() {
+    const modal = document.getElementById("profileModal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeProfileModal() {
+    const modal = document.getElementById("profileModal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
     </script>
   </head>
 
@@ -141,9 +153,9 @@
           <!-- <img src="{{ item.images.first.image.url }}" -->
 
           <img
-            src="{{ item.images.first.image.url }}"
-            class="w-full h-40 object-cover rounded-lg"
-          />
+        src="{{ item.get_image }}"
+        class="w-full h-40 object-contain rounded-lg"
+      />
           {% else %}
           <img
             src="{% static 'images/broken-image.png' %}"

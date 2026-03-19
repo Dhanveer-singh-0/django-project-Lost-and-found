@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import EmailValidator
 
-
+from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import BaseUserManager
 
 class UserManager(BaseUserManager):
@@ -27,7 +27,6 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, full_name, password, **extra_fields)
     
-
 class User(AbstractUser):
 
     ROLE_CHOICES = (
@@ -62,7 +61,6 @@ class Citizen(models.Model):
     def __str__(self):
         return f"Citizen - {self.user.full_name}"
 
-
 class AreaOfficer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     badge_number = models.CharField(max_length=50, unique=True)
@@ -70,7 +68,6 @@ class AreaOfficer(models.Model):
 
     def __str__(self):
         return f"Officer - {self.user.full_name}"
-
 
 class Contact(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -81,3 +78,12 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"{self.user.full_name} Contact"
+    
+
+class UserProfile(models.Model):
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    profile_picture = CloudinaryField('image', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.full_name} Profile"

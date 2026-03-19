@@ -1,105 +1,221 @@
-{% extends "citizen_dashboard.html" %}
-
-{% block title %}
-Profile
-{% endblock %}
-
+{% extends "citizen_dashboard.html" %} {% block title %} Profile {% endblock %}
 {% block content %}
 
 <div class="max-w-5xl mx-auto mt-8">
+  <div
+    class="bg-white shadow-md rounded-xl p-6 mb-6 flex items-center justify-between w-full"
+  >
+    <!-- LEFT SIDE -->
+    <div class="flex items-center space-x-6">
+      {% if img_url %}
 
-    <!-- Profile Header -->
-    <div class="bg-white shadow-md rounded-xl p-6 mb-6 flex items-center space-x-6">
+      <img
+  src="{{ img_url }}"
+  class="w-24 h-24 rounded-full object-cover border-2 border-indigo-500"
+/>
+      {% else %}
+      <img
+        src="/media/profile_pics/default.jpg"
+        class="w-full h-40 object-cover rounded-lg"
+      />
+      {% endif %}
 
-        <!-- Profile Photo -->
-        <img 
-            src="/static/images/profile.png" 
-            class="w-20 h-20 rounded-full border-2 border-indigo-500 object-cover"
-        >
-
-        <!-- Username -->
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">
-                {{ user.full_name }}
-            </h1>
-            <p class="text-gray-500 capitalize">
-                {{ user.role }}
-            </p>
-        </div>
-
+      <!-- Username -->
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">{{ user.full_name }}</h1>
+        <p class="text-gray-500 capitalize">{{ user.role }}</p>
+      </div>
     </div>
 
+    <!-- RIGHT SIDE BUTTON -->
+    <button
+      onclick="openProfileModal()"
+      class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm"
+    >
+      Update Profile
+    </button>
+  </div>
 
-    <!-- Profile Details -->
-    <div class="grid md:grid-cols-2 gap-6">
+  <!-- Profile Details -->
+  <div class="grid md:grid-cols-2 gap-6">
+    <!-- Account Details -->
+    <div class="bg-white shadow-md rounded-xl p-6 border">
+      <h2 class="text-lg font-semibold text-indigo-600 mb-4 border-b pb-2">
+        Account Details
+      </h2>
 
-        <!-- Account Details -->
-        <div class="bg-white shadow-md rounded-xl p-6 border">
-            
-            <h2 class="text-lg font-semibold text-indigo-600 mb-4 border-b pb-2">
-                Account Details
-            </h2>
+      <div class="space-y-3 text-gray-700">
+        <p>
+          <span class="font-semibold">Email:</span>
+          {{ user.email }}
+        </p>
 
-            <div class="space-y-3 text-gray-700">
-
-                <p>
-                    <span class="font-semibold">Email:</span>
-                    {{ user.email }}
-                </p>
-
-                <p>
-                    <span class="font-semibold">Phone:</span>
-                    {{ contact.phone }}
-                </p>
-
-            </div>
-        </div>
-
-
-        <!-- Personal Details -->
-        <div class="bg-white shadow-md rounded-xl p-6 border">
-
-            <h2 class="text-lg font-semibold text-indigo-600 mb-4 border-b pb-2">
-                Personal Details
-            </h2>
-
-            <div class="space-y-3 text-gray-700">
-
-                <p>
-                    <span class="font-semibold">Name:</span>
-                    {{ user.full_name }}
-                </p>
-                 <p>
-                    <span class="font-semibold">Aadhar:</span>
-                    {{ contact.aadhar }}
-                </p>
-
-                <p>
-                    <span class="font-semibold">Role:</span>
-                    {{ user.role }}
-                </p>
-
-                <p>
-                    <span class="font-semibold">Address:</span>
-                    {{ contact.address }}
-                </p>
-
-                <p>
-                    <span class="font-semibold">City:</span>
-                    {{ contact.city }}
-                </p>
-
-                <p>
-                    <span class="font-semibold">State:</span>
-                    {{ contact.state }}
-                </p>
-
-            </div>
-
-        </div>
-
+        <p>
+          <span class="font-semibold">Phone:</span>
+          {{ contact.phone }}
+        </p>
+      </div>
     </div>
 
+    <!-- Personal Details -->
+    <div class="bg-white shadow-md rounded-xl p-6 border">
+      <h2 class="text-lg font-semibold text-indigo-600 mb-4 border-b pb-2">
+        Personal Details
+      </h2>
+
+      <div class="space-y-3 text-gray-700">
+        <p>
+          <span class="font-semibold">Name:</span>
+          {{ user.full_name }}
+        </p>
+        <p>
+          <span class="font-semibold">Aadhar:</span>
+          {{ contact.aadhar }}
+        </p>
+
+        <p>
+          <span class="font-semibold">Role:</span>
+          {{ user.role }}
+        </p>
+
+        <p>
+          <span class="font-semibold">Address:</span>
+          {{ contact.address }}
+        </p>
+
+        <p>
+          <span class="font-semibold">City:</span>
+          {{ contact.city }}
+        </p>
+
+        <p>
+          <span class="font-semibold">State:</span>
+          {{ contact.state }}
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- 🔹 Update Profile Modal -->
+<div
+  id="profileModal"
+  class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50"
+>
+  <div class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 relative">
+    <!-- Close -->
+    <button
+      onclick="closeProfileModal()"
+      class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+    >
+      ✖
+    </button>
+
+    <h2 class="text-xl font-bold mb-4 text-indigo-600">Update Profile</h2>
+
+    <form
+      method="POST"
+      action="/account/citizen/profile/update"
+      class="space-y-6"
+    >
+      {% csrf_token %}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Full Name -->
+        <div class="flex flex-col">
+          <label class="text-sm font-medium text-gray-600 mb-1">
+            Full Name
+          </label>
+          <input
+            type="text"
+            name="full_name"
+            value="{{ user.full_name }}"
+            class="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="flex flex-col">
+          <label class="text-sm font-medium text-gray-600 mb-1"> Email </label>
+          <input
+            type="email"
+            name="email"
+            value="{{ user.email }}"
+            class="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div class="flex flex-col">
+          <label class="text-sm font-medium text-gray-600 mb-1"> Phone </label>
+          <input
+            type="text"
+            name="phone"
+            value="{{ contact.phone }}"
+            class="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- Address -->
+        <div class="flex flex-col">
+          <label class="text-sm font-medium text-gray-600 mb-1">
+            Address
+          </label>
+          <input
+            type="text"
+            name="address"
+            value="{{ contact.address }}"
+            class="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- City -->
+        <div class="flex flex-col">
+          <label class="text-sm font-medium text-gray-600 mb-1"> City </label>
+          <input
+            type="text"
+            name="city"
+            value="{{ contact.city }}"
+            class="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- State -->
+        <div class="flex flex-col">
+          <label class="text-sm font-medium text-gray-600 mb-1"> State </label>
+          <input
+            type="text"
+            name="state"
+            value="{{ contact.state }}"
+            class="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Aadhar (Full Width Highlight Section) -->
+      <div class="border-t pt-4">
+        <label class="text-sm font-medium text-gray-600 mb-1 block">
+          Aadhar Number
+        </label>
+        <input
+          type="text"
+          value="{{ contact.aadhar }}"
+          class="w-full p-2 border rounded-lg bg-gray-100 cursor-not-allowed"
+          disabled
+        />
+        <p class="text-xs text-gray-400 mt-1">
+          Aadhar cannot be changed after verification
+        </p>
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition shadow-md"
+      >
+        Save Changes
+      </button>
+    </form>
+  </div>
+</div>
 {% endblock %}

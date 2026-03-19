@@ -62,10 +62,29 @@ def upload_item(request):
 @login_required(login_url='login')
 def history_view(request):
     user_id = request.user.user_id
-    items=Item.objects.filter(user_id=user_id)
-    for item in items:
-        print('item',item.title)
-    return render(request, 'items/history.html',{"active_page" : 'history','items':items})
+    # items=Item.objects.filter(user_id=user_id)
+
+    filter_type = request.GET.get("filter")  # no default now
+
+    items = None
+
+    if filter_type:
+        items = Item.objects.filter(user=request.user)
+
+    if filter_type == "pending":
+        items = items.filter(status="pending")
+    elif filter_type == "resolved":
+        items = items.filter(status="settled")
+
+    context = {
+            "items": items,
+            "filter_type": filter_type,
+            "total_count": Item.objects.filter(user=request.user).count(),
+            "pending_count": Item.objects.filter(user=request.user, status="pending").count(),
+            "resolved_count": Item.objects.filter(user=request.user, status="settled").count(),
+            "active_page" : 'history'
+        }       
+    return render(request, 'items/history.html',context)
 
 
 @login_required(login_url='login')

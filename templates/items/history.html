@@ -1,11 +1,95 @@
 {% extends "citizen_dashboard.html" %} 
+{% load static %}
+
 {% block title %}
-history
+History
 {% endblock %} 
-{%block content %}
-      <h1>
-      History Page
-      [ My Posts ] [ My Claims ] [ Resolved ]
-      </h1>
-      <!-- {{we have items context which all the item of user all with status pending or settled}} -->
+
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-6">History</h1>
+
+<!-- 🔹 Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+  <!-- Total -->
+  <a href="?filter=all"
+     class="p-6 rounded-xl shadow-md bg-white hover:shadow-lg transition
+     {% if filter_type == 'all' %} border-2 border-indigo-500 {% endif %}">
+    <h2 class="text-lg font-semibold text-gray-600">Total Posts</h2>
+    <p class="text-2xl font-bold mt-2">{{ total_count }}</p>
+  </a>
+
+  <!-- Pending -->
+  <a href="?filter=pending"
+     class="p-6 rounded-xl shadow-md bg-yellow-100 hover:shadow-lg transition
+     {% if filter_type == 'pending' %} border-2 border-yellow-500 {% endif %}">
+    <h2 class="text-lg font-semibold text-gray-600">Pending</h2>
+    <p class="text-2xl font-bold mt-2">{{ pending_count }}</p>
+  </a>
+
+  <!-- Resolved -->
+  <a href="?filter=resolved"
+     class="p-6 rounded-xl shadow-md bg-green-100 hover:shadow-lg transition
+     {% if filter_type == 'resolved' %} border-2 border-green-500 {% endif %}">
+    <h2 class="text-lg font-semibold text-gray-600">Resolved</h2>
+    <p class="text-2xl font-bold mt-2">{{ resolved_count }}</p>
+  </a>
+
+</div>
+
+<!-- 🔹 Filtered Items -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden">
+
+  {% for item in items %}
+
+  <div class="flex items-center gap-4 p-4 border-b hover:bg-gray-50 transition">
+
+    <!-- Image -->
+    <div class="w-20 h-20 flex-shrink-0">
+      {% if item.images.first %}
+        <img src="{{ item.images.first.image.url }}" class="w-full h-full object-cover rounded-lg"/>
+      {% else %}
+        <img src="{% static 'images/broken-image.png' %}" class="w-full h-full object-cover rounded-lg"/>
+      {% endif %}
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1">
+      <h3 class="text-lg font-semibold">{{ item.title }}</h3>
+      <p class="text-sm text-gray-500">{{ item.city }}, {{ item.state }}</p>
+      <p class="text-sm text-gray-600">
+        {{ item.description|truncatewords:12 }}
+      </p>
+    </div>
+
+    <!-- Status + Date -->
+    <div class="text-right">
+
+      {% if item.status == 'pending' %}
+        <span class="text-xs px-2 py-1 bg-yellow-200 text-yellow-800 rounded">
+          Pending
+        </span>
+      {% else %}
+        <span class="text-xs px-2 py-1 bg-green-200 text-green-800 rounded">
+          Resolved
+        </span>
+      {% endif %}
+
+      <p class="text-xs text-gray-400 mt-2">
+        {{ item.created_at }}
+      </p>
+
+    </div>
+
+  </div>
+
+  {% empty %}
+    <p class="p-6 text-gray-500 text-center">
+      Click a card above to view details.
+    </p>
+  {% endfor %}
+
+</div>
+
 {% endblock %}

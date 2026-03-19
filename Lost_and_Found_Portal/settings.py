@@ -143,3 +143,11 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 print(MEDIA_ROOT)
+
+import cloudinary
+
+cloudinary.config(
+    cloud_name='djtbdt2fl',
+    api_key='992881118895757',
+    api_secret='3EI-QhKUdyyqx3aKfPOOSpyefkg'
+)
