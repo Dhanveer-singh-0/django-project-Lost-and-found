@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register_user,CreateUserView,LoginView,select_role_view,citizen_dashboard,officer_dashboard,OTP_verification,chat_view,profile_view,logout_user,update_profile_view
+from .views import register_user,CreateUserView,LoginView,select_role_view,citizen_dashboard,officer_dashboard,OTP_verification,chat_view,profile_view,logout_user,update_profile_view,public_profile_view
 
 urlpatterns = [
     path("", select_role_view, name="select_role"),
@@ -21,6 +21,7 @@ urlpatterns = [
     path("officer_dashboard/", officer_dashboard, name="officer_dashboard"),
 
 
+    path('user/<int:user_id>/',public_profile_view, name='public_profile'),
     path("createuser/", CreateUserView.as_view(), name="createuser"),
 
 ]

@@ -135,61 +135,41 @@
       <div class="grid md:grid-cols-3 gap-6">
         {% for item in items %}
 
-        <div class="relative rounded-xl shadow-md p-4 bg-white">
-          <!-- Ribbon -->
-          {% if item.item_type == 'found' %}
-          <div
-            class="absolute top-2 right-2 bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow"
-          >
-            FOUND
-          </div>
-          {% elif item.item_type == 'lost' %}
-          <div
-            class="absolute top-2 right-2 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow"
-          >
-            LOST
-          </div>
-          {% endif %} {% if item.images.first %}
-          <!-- <img src="{{ item.images.first.image.url }}" -->
+        <a href="{% url 'item_detail' item.item_id %}" class="block">
+  <div class="relative rounded-xl shadow-md p-4 bg-white hover:shadow-xl transition duration-300">
 
-          <img
-        src="{{ item.get_image }}"
-        class="w-full h-40 object-contain rounded-lg"
-      />
-          {% else %}
-          <img
-            src="{% static 'images/broken-image.png' %}"
-            class="w-full h-40 object-cover rounded-lg"
-          />
-          {% endif %}
+    <!-- Ribbon -->
+    {% if item.item_type == 'found' %}
+    <div class="absolute top-2 right-2 bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow">
+      FOUND
+    </div>
+    {% elif item.item_type == 'lost' %}
+    <div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow">
+      LOST
+    </div>
+    {% endif %}
 
-          <!-- 
-{% if item.title == 'Phone' %}
-<img
-  src="/static/images/phonee.jpg"
-  class="w-full h-40 object-cover rounded-lg"
-/>
-{% endif %} 
-{% if item.title == 'Purse' %}
-<img
-  src="/static/images/purse.png"
-  class="w-full h-40 object-cover rounded-lg"
-/>
-{% endif %} 
--->
+    <!-- Image -->
+    <img
+      src="{{ item.get_image }}"
+      class="w-full h-40 object-contain rounded-lg"
+    />
 
-          <h3 class="text-lg font-semibold mt-3">{{ item.title }}</h3>
+    <!-- Content -->
+    <h3 class="text-lg font-semibold mt-3">{{ item.title }}</h3>
 
-          <p class="text-gray-500 text-sm">{{ item.city }}, {{ item.state }}</p>
+    <p class="text-gray-500 text-sm">{{ item.city }}, {{ item.state }}</p>
 
-          <p class="text-gray-600 text-sm mt-2">
-            {{ item.description|truncatewords:10 }}
-          </p>
+    <p class="text-gray-600 text-sm mt-2">
+      {{ item.description|truncatewords:10 }}
+    </p>
 
-          <div class="mt-3 text-sm text-gray-400">
-            Uploaded by <b>{{item.user.full_name|upper}}</b>, on {{ item.created_at }}
-          </div>
-        </div>
+    <div class="mt-3 text-sm text-gray-400">
+      Uploaded by <b>{{ item.user.full_name|upper }}</b>, on {{ item.created_at }}
+    </div>
+
+  </div>
+</a>
 
         {% empty %}
 

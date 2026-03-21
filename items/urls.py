@@ -2,7 +2,7 @@ from django.conf import settings
 from django.urls import path
 from django.conf.urls.static import static
 
-from .views import lost_view,found_view,upload_item,my_posts,history_view
+from .views import lost_view,found_view,upload_item,my_posts,history_view,item_detail_view
 
 urlpatterns = [
     path("lost/", lost_view, name="lost_items"),
@@ -10,6 +10,8 @@ urlpatterns = [
     path("upload_item/", upload_item, name="upload_item"),
     path("history/", history_view, name="history"),
     path("history/my-posts", my_posts, name="my_posts"),
+
+    path('item/<int:item_id>/', item_detail_view, name='item_detail'),
 
 
 

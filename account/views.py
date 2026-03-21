@@ -2,7 +2,7 @@ import random
 import requests
 
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login,logout
 
@@ -168,66 +168,24 @@ class OTP_verification(View):
 def chat_view(request):
     return render(request, 'account/chat.html',{"active_page" : 'chat'})
 
-# def profile_view(request):
-#     user = None
-#     img_url=None
-#     if request.user.is_authenticated:
-#         user=request.user
-#         img=UserProfile.objects.get(user_id=user.user_id)
-#         print('\n\n',img)
-#         if user.profile:
-#             img_url=user.profile.profile_picture.url
-#         else:
-#             img_url='/media/profile_pics/default.jpg'
-#         print(user.profile.profile_picture.url)
-#         print(user.user_id)
-#         contact=Contact.objects.get(user_id=user.user_id)
-#         aadhar=Citizen.objects.get(user_id=user.user_id).aadhar
-#         print(contact.phone)
-#         print(user.role)
-
-#         user={
-#             'role':user.role,
-#             'full_name':user.full_name,
-#             'email':user.email,
-#             'user_id':user.user_id,
-#         }
-#         contact={
-#             'phone':contact.phone,
-#             'address':contact.address,
-#             'city':contact.city,
-#             'state':contact.state,
-#             'aadhar':aadhar
-#             }
-        
-
-
-#     return render(request, 'account/profile.html', {"img_url":img_url,"user": user,"contact":contact,"active_page" : 'profile'})
-
-
 def profile_view(request):
     if not request.user.is_authenticated:
         return redirect('login')  # optional safety
 
     user = request.user
 
-    # ✅ Safe profile fetch
     profile = getattr(user, "profile", None)
 
-    # ✅ Image logic
     if profile and profile.profile_picture:
         img_url = profile.profile_picture.url
     else:
         img_url = "/static/images/default.jpg"  # better than /media
 
-    # ✅ Contact safe fetch
     contact_obj, _ = Contact.objects.get_or_create(user=user)
 
-    # ✅ Aadhar safe fetch
     citizen = Citizen.objects.filter(user=user).first()
     aadhar = citizen.aadhar if citizen else None
 
-    # ✅ Data for template (DO NOT overwrite user object)
     user_data = {
         'role': user.role,
         'full_name': user.full_name,
@@ -264,3 +222,25 @@ def update_profile_view(request):
     user.save()
     contact.save()
     return redirect('profile')
+
+
+def public_profile_view(request, user_id):
+    user = get_object_or_404(User, user_id=user_id)
+
+    if hasattr(user, "profile") and user.profile.profile_picture:
+        profile_url = user.profile.profile_picture.url
+    else:
+        profile_url = "/static/images/default.jpg"
+
+    contact = Contact.objects.filter(user=user).first()
+
+    items = Item.objects.filter(user=user).order_by("-created_at")
+
+    context = {
+        "profile_user": user,
+        "profile_url": profile_url,
+        "contact": contact,
+        "items": items,
+    }
+
+    return render(request, "account/public_profile.html", context)

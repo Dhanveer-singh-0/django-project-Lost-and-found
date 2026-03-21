@@ -1,4 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
+
+from account.models import Contact
 from .models import Item, ItemImage
 from django.contrib.auth.decorators import login_required
 
@@ -89,8 +91,29 @@ def history_view(request):
 
 @login_required(login_url='login')
 def my_posts(request):
-    
-
     return redirect('my_posts')
 
 
+@login_required(login_url='login')
+def item_detail_view(request, item_id):
+    item = get_object_or_404(Item, item_id=item_id)
+    img_url = item.get_image()
+    user = item.user
+    profile = getattr(user, "profile", None)
+
+    if profile and profile.profile_picture:
+        profile_url = profile.profile_picture.url
+    else:
+        profile_url = "/static/images/default.jpg"  # better than /media
+
+    contact = Contact.objects.filter(user=user).first()
+
+    context = {
+        "item": item,
+        "img_url": img_url,
+        "profile_url":profile_url,
+        "owner": user,
+        "contact": contact
+    }
+
+    return render(request, "items/item_detail.html", context)
